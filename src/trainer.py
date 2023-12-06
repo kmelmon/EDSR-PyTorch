@@ -45,8 +45,8 @@ class Trainer():
             timer_model.tic()
 
             self.optimizer.zero_grad()
-            sr = self.model(lr, 0)
-            loss = self.loss(sr, hr)
+            sr = self.model(hr, 0)
+            loss = self.loss(sr, lr)
             loss.backward()
             if self.args.gclip > 0:
                 utils.clip_grad_value_(
@@ -88,13 +88,15 @@ class Trainer():
                 d.dataset.set_scale(idx_scale)
                 for lr, hr, filename in tqdm(d, ncols=80):
                     lr, hr = self.prepare(lr, hr)
-                    sr = self.model(lr, idx_scale)
+                    if self.args.test_only:
+                        hr = lr
+                    sr = self.model(hr, idx_scale)
                     sr = utility.quantize(sr, self.args.rgb_range)
 
                     save_list = [sr]
-                    self.ckp.log[-1, idx_data, idx_scale] += utility.calc_psnr(
-                        sr, hr, scale, self.args.rgb_range, dataset=d
-                    )
+                    #self.ckp.log[-1, idx_data, idx_scale] += utility.calc_psnr(
+                    #    sr, lr, scale, self.args.rgb_range, dataset=d
+                    #)
                     if self.args.save_gt:
                         save_list.extend([lr, hr])
 

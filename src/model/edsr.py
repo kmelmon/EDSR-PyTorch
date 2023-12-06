@@ -44,7 +44,8 @@ class EDSR(nn.Module):
 
         # define tail module
         m_tail = [
-            common.Upsampler(conv, scale, n_feats, act=False),
+            #common.Upsampler(conv, scale, n_feats, act=False),
+            nn.AvgPool2d(kernel_size=2, stride=2),
             conv(n_feats, args.n_colors, kernel_size)
         ]
 
