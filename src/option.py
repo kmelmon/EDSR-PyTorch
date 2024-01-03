@@ -143,6 +143,10 @@ parser.add_argument('--save_results', action='store_true',
 parser.add_argument('--save_gt', action='store_true',
                     help='save low-resolution and high-resolution images together')
 
+# Downscaler related
+parser.add_argument('--downscale', action='store_true',
+                    help='set to train downscaler model')
+
 args = parser.parse_args()
 template.set_template(args)
 

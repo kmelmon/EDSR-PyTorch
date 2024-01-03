@@ -134,6 +134,7 @@ class SRData(data.Dataset):
 
     def get_patch(self, lr, hr):
         scale = self.scale[self.idx_scale]
+        #scale = 1
         if self.train:
             lr, hr = common.get_patch(
                 lr, hr,
