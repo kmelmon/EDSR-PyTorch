@@ -67,6 +67,8 @@ class checkpoint():
             else:
                 args.load = ''
 
+        if (args.azureml):
+            self.dir = 'outputs'
         if args.reset:
             os.system('rm -rf ' + self.dir)
             args.load = ''
