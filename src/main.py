@@ -1,5 +1,4 @@
 import torch
-
 import utility
 import data
 import model
@@ -19,6 +18,7 @@ def main():
         t.test()
     else:
         if checkpoint.ok:
+            print("dir_data is " + args.dir_data)
             loader = data.Data(args)
             _model = model.Model(args, checkpoint)
             _loss = loss.Loss(args, checkpoint) if not args.test_only else None

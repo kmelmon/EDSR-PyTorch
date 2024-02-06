@@ -23,6 +23,7 @@ class SRData(data.Dataset):
         self.idx_scale = 0
         
         self._set_filesystem(args.dir_data)
+        print("dir_data is " + args.dir_data)
         if args.ext.find('img') < 0:
             path_bin = os.path.join(self.apath, 'bin')
             os.makedirs(path_bin, exist_ok=True)

@@ -149,9 +149,9 @@ class Trainer():
         if self.args.cpu:
             device = torch.device('cpu')
         else:
-            if torch.backends.mps.is_available():
-                device = torch.device('mps')
-            elif torch.cuda.is_available():
+            #if torch.backends.mps.is_available():
+                #device = torch.device('mps')
+            if torch.cuda.is_available():
                 device = torch.device('cuda')
             else:
                 device = torch.device('cpu')

@@ -19,6 +19,7 @@ class Data:
         if not args.test_only:
             datasets = []
             for d in args.data_train:
+                print('train = ' + d)
                 module_name = d if d.find('DIV2K-Q') < 0 else 'DIV2KJPEG'
                 m = import_module('data.' + module_name.lower())
                 datasets.append(getattr(m, module_name)(args, name=d))
