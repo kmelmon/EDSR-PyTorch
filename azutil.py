@@ -14,8 +14,8 @@ def setup_azure():
 
     az_ws = Workspace.get(name = "GfxMLTrainingGPUWorkspace1",  subscription_id = "68d80131-d556-4763-8084-2a66f90a8efd", resource_group= "GfxMLTraining")
     az_ds = az_ws.datastores["cadmus"]
-    az_ds_ref_div2k = az_ds.path("DIV2K").as_mount()
-    args = ["--model", "EDSR", "--scale", "2", "--save", "edsr_x2", "--patch_size", "96", "--n_resblocks", "32", "--n_feats", "64", "--res_scale", "0.1", "--reset", "--ext", "img", "--save_models", "--dir_data", str(az_ds_ref_div2k)]
+    az_ds_ref_div2k = az_ds.path("DIV2KDownscale").as_mount()
+    args = ["--azureml", "--model", "EDSR", "--downscale", "--scale", "1", "--save", "edsr_downscale", "--patch_size", "96", "--n_resblocks", "32", "--n_feats", "64", "--res_scale", "0.1", "--reset", "--ext", "img", "--save_models", "--dir_data", str(az_ds_ref_div2k)]
     az_target = ComputeTarget(az_ws, "gpu-a100-8")
     az_config = ScriptRunConfig(
         source_directory="src",
