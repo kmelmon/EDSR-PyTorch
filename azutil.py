@@ -3,20 +3,25 @@ from azureml.core.runconfig import MpiConfiguration, DockerConfiguration
 
 def setup_azure():
 
-    distr_config = MpiConfiguration(process_count_per_node=8, node_count=1)
+    #distr_config = MpiConfiguration(process_count_per_node=4, node_count=1)
 
     docker_base_image = 'mcr.microsoft.com/azureml/openmpi4.1.0-cuda11.1-cudnn8-ubuntu20.04'
     pytorch_env = Environment.from_conda_specification(name = "RDNN-GPU", file_path = './conda_dependencies.yml')
     pytorch_env.docker.base_image = docker_base_image
 
-    shm_size = 80 * max(8, 1)
+    shm_size = 80 * max(4, 1)
     docker_config = DockerConfiguration(use_docker=True, shm_size=f"{shm_size}g")
 
     az_ws = Workspace.get(name = "GfxMLTrainingGPUWorkspace1",  subscription_id = "68d80131-d556-4763-8084-2a66f90a8efd", resource_group= "GfxMLTraining")
     az_ds = az_ws.datastores["cadmus"]
-    az_ds_ref_div2k = az_ds.path("DIV2KDownscale").as_mount()
-    args = ["--azureml", "--model", "EDSR", "--downscale", "--scale", "1", "--save", "edsr_downscale", "--patch_size", "96", "--n_resblocks", "32", "--n_feats", "64", "--res_scale", "0.1", "--reset", "--ext", "img", "--save_models", "--dir_data", str(az_ds_ref_div2k)]
-    az_target = ComputeTarget(az_ws, "gpu-a100-8")
+    az_ds_ref_div2k = az_ds.path("DIV2KAncientTempleRuinsTestFXAA").as_mount()
+    #for training
+    #args = ["--azureml", "--model", "EDSR", "--downscale", "--scale", "2", "--save", "edsr_downscale_noaalanczos", "--patch_size", "96", "--n_resblocks", "32", "--n_feats", "128", "--res_scale", "0.1", "--reset", "--ext", "img", "--save_models", "--dir_data", str(az_ds_ref_div2k)]
+
+    #for testing
+    args = ["--client_id", "7ea1e259-3558-425a-a8b9-106b5b76ac20", "--container_name", "trainingblob", "--save_inference_to_azure", "ZappTrainingData/DIV2K_train_HR", "--azureml", "--dir_data", str(az_ds_ref_div2k), "--pre_train", "models/model_best_FXAA.pt", "--dir_demo", "DIV2K/DIV2K_train_HR", "--test_only", "--save_results", "--data_test", "Demo", "--model", "EDSR", "--downscale", "--scale", "1", "--patch_size", "96", "--n_resblocks", "32", "--n_feats", "128", "--res_scale", "0.1"]
+
+    az_target = ComputeTarget(az_ws, "gpu-4xv100-sc-2")
     az_config = ScriptRunConfig(
         source_directory="src",
         script="main.py",
@@ -26,7 +31,7 @@ def setup_azure():
         environment=pytorch_env,
         arguments=args,
         # arguments=[str(az_ds_ref)],
-        distributed_job_config=distr_config
+        #distributed_job_config=distr_config
     )
     az_config.run_config.data_references[az_ds_ref_div2k.data_reference_name] = az_ds_ref_div2k.to_config()
 

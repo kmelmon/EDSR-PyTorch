@@ -23,13 +23,19 @@ parser.add_argument('--dir_data', type=str, default='D:\\edsr-pytorch',
                     help='dataset directory')
 parser.add_argument('--azureml', action='store_true',
                     help='set to create outputs directory for azure run')
+parser.add_argument('--save_inference_to_azure', type=str, default='',
+                    help='location in Azure storage to save inference results')
+parser.add_argument('--client_id', type=str, default='',
+                    help = 'The client ID to authenticate for a user-assigned managed identity. If empty string, saves files locally. Otherwise saves into azure storage. Use ? for interactive credentials with --login_hint arg')
+parser.add_argument('--login_hint', type=str, help = 'login hint', default='')
+parser.add_argument('--container_name', type=str, help='Container name', default='')
 parser.add_argument('--dir_demo', type=str, default='../test',
                     help='demo image directory')
 parser.add_argument('--data_train', type=str, default='DIV2K',
                     help='train dataset name')
 parser.add_argument('--data_test', type=str, default='DIV2K',
                     help='test dataset name')
-parser.add_argument('--data_range', type=str, default='1-1899/1900-1901',
+parser.add_argument('--data_range', type=str, default='1-5299/5299-5300',
                     help='train/test data range')
 parser.add_argument('--ext', type=str, default='sep',
                     help='dataset file extension')

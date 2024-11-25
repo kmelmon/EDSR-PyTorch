@@ -37,6 +37,47 @@ class EDSR(nn.Module):
             #conv(args.n_colors, n_feats, kernel_size),
             #nn.AvgPool2d(kernel_size=2, stride=2),
             conv(args.n_colors, n_feats, kernel_size),         
+            #nn.Conv2d(args.n_colors, n_feats, kernel_size=3, stride=2, padding=1)
+
+        ]
+
+        # define body module
+        m_body = [
+            common.ResBlock(
+                conv, n_feats, kernel_size, act=act, res_scale=args.res_scale
+            ) for _ in range(n_resblocks)
+        ]
+        m_body.append(conv(n_feats, n_feats, kernel_size))
+
+        # define tail module
+        m_tail = [conv(n_feats, args.n_colors, kernel_size)]
+
+        self.head = nn.Sequential(*m_head)
+        self.body = nn.Sequential(*m_body)
+        self.tail = nn.Sequential(*m_tail)
+
+    def __init_downscale_original__(self, args, conv=common.default_conv):
+        super(EDSR, self).__init__()
+
+        n_resblocks = args.n_resblocks
+        n_feats = args.n_feats
+        kernel_size = 3 
+        scale = args.scale[0]
+        act = nn.ReLU(True)
+        url_name = 'r{}f{}x{}'.format(n_resblocks, n_feats, scale)
+        if url_name in url:
+            self.url = url[url_name]
+        else:
+            self.url = None
+        self.sub_mean = common.MeanShift(args.rgb_range)
+        self.add_mean = common.MeanShift(args.rgb_range, sign=1)
+
+        # define head module
+        m_head = [
+            #common.Upsampler(conv, scale, n_feats, act=False),
+            #conv(args.n_colors, n_feats, kernel_size),
+            #nn.AvgPool2d(kernel_size=2, stride=2),
+            conv(args.n_colors, n_feats, kernel_size),         
         ]
 
         # define body module

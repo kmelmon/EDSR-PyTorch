@@ -18,9 +18,15 @@ class Demo(data.Dataset):
         self.benchmark = benchmark
 
         self.filelist = []
-        for f in os.listdir(args.dir_demo):
+        cwd = os.getcwd()
+        print("Current Working Directory:", cwd)
+        theDir = args.dir_demo
+        if (args.azureml):
+            theDir = os.path.join(args.dir_data, args.dir_demo)
+        print("Demo Directory:", theDir)
+        for f in os.listdir(theDir):
             if f.find('.png') >= 0 or f.find('.jp') >= 0:
-                self.filelist.append(os.path.join(args.dir_demo, f))
+                self.filelist.append(os.path.join(theDir, f))
         self.filelist.sort()
 
     def __getitem__(self, idx):

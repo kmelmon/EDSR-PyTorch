@@ -39,7 +39,9 @@ class Trainer():
         timer_data, timer_model = utility.timer(), utility.timer()
         # TEMP
         self.loader_train.dataset.set_scale(0)
+        counter = 0
         for batch, (lr, hr, _,) in enumerate(self.loader_train):
+            counter += 1
             lr, hr = self.prepare(lr, hr)
             timer_data.hold()
             timer_model.tic()

@@ -8,6 +8,7 @@ import torchvision.models as models
 class VGG(nn.Module):
     def __init__(self, conv_index, rgb_range=1):
         super(VGG, self).__init__()
+        conv_index = '22'
         vgg_features = models.vgg19(pretrained=True).features
         modules = [m for m in vgg_features]
         if conv_index.find('22') >= 0:

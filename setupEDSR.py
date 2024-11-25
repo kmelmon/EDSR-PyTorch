@@ -8,6 +8,7 @@ import glob
 import os
 from PIL import Image
 from io import BytesIO
+import math
 
 def GlobalLog(msg) :
     Log(msg)    
@@ -82,28 +83,57 @@ def SaveOutputFile(img, args):
 
 def CopyLowResImages(args):
     inputFileList = glob.glob(args.inputLRPath)
+    copyEvery = 1
+    filesToCopy = args.files_to_copy
+    if (filesToCopy != -1):
+        copyEvery = math.floor(len(inputFileList) / filesToCopy)
+    counter = 0
+    copied = 0
+
     for inputFile in inputFileList:
-        print(inputFile)
-        print('\n')
-        img = Image.open(inputFile)
-        img = img.convert('RGB')
-        outputFile = get_filename_from_path(inputFile)
-        base, extension = os.path.splitext(outputFile)
-        outputFile = f"{base}x1.png"
-        args.outputFile = args.output_lr + '/' + outputFile
-        SaveOutputFile(img, args)
+        if copied == filesToCopy:
+            break
+        if counter < copyEvery - 1:
+            counter += 1
+        else:
+            print(inputFile)
+            print('\n')
+            img = Image.open(inputFile)
+            img = img.convert('RGB')
+            outputFile = get_filename_from_path(inputFile)
+            base, extension = os.path.splitext(outputFile)
+            #outputFile = f"{base}x1.png"
+            outputFile = f"{base}x2.png"
+            args.outputFile = args.output_lr + '/' + outputFile
+            SaveOutputFile(img, args)
+            copied += 1
+            counter = 0
 
 def CopyHighResImages(args):
     inputFileList = glob.glob(args.inputHRPath)
+    copyEvery = 1
+    filesToCopy = args.files_to_copy
+    if (filesToCopy != -1):
+        copyEvery = math.floor(len(inputFileList) / filesToCopy)
+    counter = 0
+    copied = 0
+
     for inputFile in inputFileList:
-        print(inputFile)
-        print('\n')
-        img = Image.open(inputFile)
-        img = img.resize((args.lr_width, args.lr_height), Image.BILINEAR) 
-        img = img.convert('RGB')
-        outputFile = get_filename_from_path(inputFile)
-        args.outputFile = args.output_hr + '/' + outputFile
-        SaveOutputFile(img, args)
+        if copied == filesToCopy:
+            break
+        if counter < copyEvery - 1:
+            counter += 1
+        else:
+            print(inputFile)
+            print('\n')
+            img = Image.open(inputFile)
+            #img = img.resize((args.lr_width, args.lr_height), Image.LANCZOS) 
+            img = img.convert('RGB')
+            outputFile = get_filename_from_path(inputFile)
+            args.outputFile = args.output_hr + '/' + outputFile
+            SaveOutputFile(img, args)
+            copied += 1
+            counter = 0
 
 if __name__ == "__main__":
     args = setup_EDSR_args.parser.parse_args()
