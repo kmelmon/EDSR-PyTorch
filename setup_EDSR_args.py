@@ -12,4 +12,4 @@ parser.add_argument('--files_to_copy', type=int,   help='number of files to copy
 parser.add_argument('--client_id', type=str, help = 'The client ID to authenticate for a user-assigned managed identity. If empty string, saves files locally. Otherwise saves into azure storage. Use ? for interactive credentials with --login_hint arg', default='7ea1e259-3558-425a-a8b9-106b5b76ac20')
 parser.add_argument('--login_hint', type=str, help = 'login hint', default='')
 parser.add_argument('--container_name_training_data', type=str, help='Container name', default='trainingblob')
-parser.add_argument('--container_name_EDSR_data', type=str, help='Container name', default='cadmus')
+parser.add_argument('--container_name_EDSR_data', type=str, help='Container name for output EDSR training data', default='cadmus')
