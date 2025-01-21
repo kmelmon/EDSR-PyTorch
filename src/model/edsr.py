@@ -22,6 +22,7 @@ class EDSR(nn.Module):
         n_feats = args.n_feats
         kernel_size = 3 
         scale = args.scale[0]
+        self.use_reconstruction_loss = args.use_reconstruction_loss
         act = nn.ReLU(True)
         url_name = 'r{}f{}x{}'.format(n_resblocks, n_feats, scale)
         if url_name in url:
@@ -36,8 +37,10 @@ class EDSR(nn.Module):
             #common.Upsampler(conv, scale, n_feats, act=False),
             #conv(args.n_colors, n_feats, kernel_size),
             #nn.AvgPool2d(kernel_size=2, stride=2),
-            conv(args.n_colors, n_feats, kernel_size),         
-            #nn.Conv2d(args.n_colors, n_feats, kernel_size=3, stride=2, padding=1)
+            
+            #conv(args.n_colors, n_feats, kernel_size),         
+            #for strided convolution based downscale
+            nn.Conv2d(args.n_colors, n_feats, kernel_size=3, stride=2, padding=1)
 
         ]
 
@@ -55,6 +58,15 @@ class EDSR(nn.Module):
         self.head = nn.Sequential(*m_head)
         self.body = nn.Sequential(*m_body)
         self.tail = nn.Sequential(*m_tail)
+
+        # upscaler: Restores spatial resolution
+        self.upscaler = nn.Sequential(
+            nn.Upsample(scale_factor=2, mode='bilinear'),
+            conv(args.n_colors, n_feats, kernel_size),
+            conv(n_feats, n_feats, kernel_size),
+            conv(n_feats, args.n_colors, kernel_size)
+        )
+
 
     def __init_downscale_original__(self, args, conv=common.default_conv):
         super(EDSR, self).__init__()
@@ -143,7 +155,11 @@ class EDSR(nn.Module):
         x = self.tail(res)
         x = self.add_mean(x)
 
-        return x 
+        if (self.use_reconstruction_loss):
+            reconstructed = self.upscaler(x)
+            return x, reconstructed 
+        else:
+            return x
 
     def load_state_dict(self, state_dict, strict=True):
         own_state = self.state_dict()

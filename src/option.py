@@ -35,7 +35,7 @@ parser.add_argument('--data_train', type=str, default='DIV2K',
                     help='train dataset name')
 parser.add_argument('--data_test', type=str, default='DIV2K',
                     help='test dataset name')
-parser.add_argument('--data_range', type=str, default='1-5299/5299-5300',
+parser.add_argument('--data_range', type=str, default='1-8350/8350-8400',
                     help='train/test data range')
 parser.add_argument('--ext', type=str, default='sep',
                     help='dataset file extension')
@@ -95,7 +95,7 @@ parser.add_argument('--reset', action='store_true',
                     help='reset the training')
 parser.add_argument('--test_every', type=int, default=1000,
                     help='do test per every N batches')
-parser.add_argument('--epochs', type=int, default=300,
+parser.add_argument('--epochs', type=int, default=600,
                     help='number of epochs to train')
 parser.add_argument('--batch_size', type=int, default=16,
                     help='input batch size for training')
@@ -154,6 +154,8 @@ parser.add_argument('--save_gt', action='store_true',
 # Downscaler related
 parser.add_argument('--downscale', action='store_true',
                     help='set to train downscaler model')
+parser.add_argument('--use_reconstruction_loss', action='store_true',
+                    help='set to use reconstruction loss for downscaler training')
 
 args = parser.parse_args()
 template.set_template(args)

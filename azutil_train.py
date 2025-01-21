@@ -9,15 +9,15 @@ def setup_azure():
     pytorch_env = Environment.from_conda_specification(name = "RDNN-GPU", file_path = './conda_dependencies.yml')
     pytorch_env.docker.base_image = docker_base_image
 
-    shm_size = 80 * max(4, 1)
+    shm_size = 80 * max(8, 1)
     docker_config = DockerConfiguration(use_docker=True, shm_size=f"{shm_size}g")
 
     az_ws = Workspace.get(name = "GfxMLTrainingGPUWorkspace1",  subscription_id = "68d80131-d556-4763-8084-2a66f90a8efd", resource_group= "GfxMLTraining")
     az_ds = az_ws.datastores["cadmus"]
-    az_ds_ref_div2k = az_ds.path("DIV2KAncientTempleRuinsTestFXAA").as_mount()
-    args = ["--azureml", "--model", "EDSR", "--downscale", "--scale", "2", "--save", "edsr_downscale_noaalanczos", "--patch_size", "96", "--n_resblocks", "32", "--n_feats", "128", "--res_scale", "0.1", "--reset", "--ext", "img", "--save_models", "--dir_data", str(az_ds_ref_div2k)]
+    az_ds_ref_div2k = az_ds.path("DIV2KAncientTempleRuinsTestFXAA2").as_mount()
+    args = ["--azureml", "--model", "EDSR", "--downscale", "--loss", "1*VGG", "--scale", "2", "--save", "edsr_downscale", "--patch_size", "96", "--n_resblocks", "32", "--n_feats", "128", "--res_scale", "0.1", "--reset", "--ext", "img", "--save_models", "--dir_data", str(az_ds_ref_div2k)]
 
-    az_target = ComputeTarget(az_ws, "gpu-4xv100-sc-2")
+    az_target = ComputeTarget(az_ws, "gpu-4xv100-sc-19")
     az_config = ScriptRunConfig(
         source_directory="src",
         script="main.py",

@@ -21,8 +21,8 @@ def main():
     else:
         if checkpoint.ok:
             print("dir_data is " + args.dir_data)
-            if (args.azureml):
-                args.pre_train = os.path.join(args.dir_data, args.pre_train)
+            #if (args.azureml):
+                #args.pre_train = os.path.join(args.dir_data, args.pre_train)
             loader = data.Data(args)
             _model = model.Model(args, checkpoint)
             _loss = loss.Loss(args, checkpoint) if not args.test_only else None

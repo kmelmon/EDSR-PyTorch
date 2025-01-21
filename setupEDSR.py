@@ -127,7 +127,33 @@ def CopyHighResImages(args):
             print(inputFile)
             print('\n')
             img = Image.open(inputFile)
-            #img = img.resize((args.lr_width, args.lr_height), Image.LANCZOS) 
+            img = img.convert('RGB')
+            imgResized = img
+            #imgResized = img.resize((args.lr_width, args.lr_height), Image.LANCZOS) 
+            outputFile = get_filename_from_path(inputFile)
+            args.outputFile = args.output_hr + '/' + outputFile
+            SaveOutputFile(imgResized, args)
+            copied += 1
+            counter = 0
+
+def CopyHighResImagesTemp(args):
+    inputFileList = glob.glob(args.inputHRPath)
+    copyEvery = 1
+    filesToCopy = args.files_to_copy
+    if (filesToCopy != -1):
+        copyEvery = math.floor(len(inputFileList) / filesToCopy)
+    counter = 0
+    copied = 0
+
+    for inputFile in inputFileList:
+        if copied == filesToCopy:
+            break
+        if counter < copyEvery - 1:
+            counter += 1
+        else:
+            print(inputFile)
+            print('\n')
+            img = Image.open(inputFile)
             img = img.convert('RGB')
             outputFile = get_filename_from_path(inputFile)
             args.outputFile = args.output_hr + '/' + outputFile
@@ -143,4 +169,4 @@ if __name__ == "__main__":
     args.inputHRPath = args.root_folder_training_data + args.input_hr + '/*.png'
     GetBlobService(args)
     CopyLowResImages(args)
-    CopyHighResImages(args)
+    CopyHighResImagesTemp(args)

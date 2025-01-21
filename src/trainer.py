@@ -48,8 +48,12 @@ class Trainer():
 
             self.optimizer.zero_grad()
             if self.args.downscale:
-                sr = self.model(hr, 0)
-                loss = self.loss(sr, lr)
+                if self.args.use_reconstruction_loss:
+                    sr, reconstructed = self.model(hr, 0)
+                    loss = self.loss(hr, reconstructed)
+                else:
+                    sr = self.model(hr, 0)
+                    loss = self.loss(sr, lr)
             else:
                 if self.args.model == 'Morbo':
                     sr = self.model(lr, 0)
