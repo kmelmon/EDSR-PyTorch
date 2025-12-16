@@ -21,13 +21,14 @@ setup_EDSR_args.py
 The script works both on local files as well as Azure storage using Sigma subscription.  
 For an example job that uses Azure storage, see https://ml.azure.com/experiments/id/80821360-5968-4231-9b34-7749fb300955/runs/setupEDSR_1745618828_7675e041?wsid=/subscriptions/68d80131-d556-4763-8084-2a66f90a8efd/resourceGroups/gfxmltraining/providers/Microsoft.MachineLearningServices/workspaces/GfxMLTrainingGPUWorkspace1&tid=72f988bf-86f1-41af-91ab-2d7cd011db47
 <br>
-There are also these 2 scripts that help copy and rename files:  
+There are also these 2 scripts that help copy and rename files.  Note the scripts are a mish mash of different usages, just modify as needed:  
 CopyEm.py  
 RenameEm.py
 <br>
 ### Doing training runs
-To launch training:  python main.py  
-There are many parameters to control training.  Here are the ones I typically use and the typical value:
+To launch training locally:  python main.py  
+To launch training in the cloud:  python azutil_train.py  
+There are many parameters to control training.  See option.py.  Here are the ones I typically use and the typical value:
 - --model EDSR
 - --downscale
 - --scale 2
@@ -42,7 +43,7 @@ There are many parameters to control training.  Here are the ones I typically us
 - --save_models
 - --azureml (only specify if running in Azure ML, remove for local training)
 
-For an example training job, see https://ml.azure.com/experiments/id/3497afb9-1838-4f58-8220-e7437ed155ea/runs/EDSR_1L1_2VGG_1738451251_cbb76799?wsid=/subscriptions/68d80131-d556-4763-8084-2a66f90a8efd/resourceGroups/gfxmltraining/providers/Microsoft.MachineLearningServices/workspaces/GfxMLTrainingGPUWorkspace1&tid=72f988bf-86f1-41af-91ab-2d7cd011db47
+For an example training job that runs in Azure ML, see https://ml.azure.com/experiments/id/3497afb9-1838-4f58-8220-e7437ed155ea/runs/EDSR_1L1_2VGG_1738451251_cbb76799?wsid=/subscriptions/68d80131-d556-4763-8084-2a66f90a8efd/resourceGroups/gfxmltraining/providers/Microsoft.MachineLearningServices/workspaces/GfxMLTrainingGPUWorkspace1&tid=72f988bf-86f1-41af-91ab-2d7cd011db47
 <br>
 You can find model outputs from training in:
 - root/experiments/test/model (if training locally)
