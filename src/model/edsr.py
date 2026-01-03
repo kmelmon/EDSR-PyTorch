@@ -38,10 +38,9 @@ class EDSR(nn.Module):
             #conv(args.n_colors, n_feats, kernel_size),
             #nn.AvgPool2d(kernel_size=2, stride=2),
             
-            #conv(args.n_colors, n_feats, kernel_size),         
+            conv(args.n_colors, n_feats, kernel_size) if scale == 1 else    
             #for strided convolution based downscale
             nn.Conv2d(args.n_colors, n_feats, kernel_size=3, stride=2, padding=1)
-
         ]
 
         # define body module
